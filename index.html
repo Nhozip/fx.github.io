@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+    <title>Ma première page avec du style</title>
+  </head>
+
+  <script>
+    var x = 0
+    function copyToClipboard() {
+      var text = getSelect('ddlViewBy')
+      var type = getSelect('type')
+      var sl = document.getElementById('sl').value
+      var tp = document.getElementById('tp').value
+      content.value = text + '\n' + type + '\n' + sl + '\n' + tp
+      var copyText = document.getElementById('content').value
+
+      navigator.clipboard.writeText(copyText).then(() => {
+        // Alert the user that the action took place.
+        // Nobody likes hidden stuff being done under the hood!
+        alert('Copyy ok')
+      })
+    }
+    function getSelect(s) {
+      var e = document.getElementById(s)
+      var value = e.value
+      var text = e.options[e.selectedIndex].text
+      return text
+    }
+  </script>
+  <body>
+    <div>
+      <label for="lang">Symbols</label>
+      <select id="ddlViewBy">
+        <option value="1">XAUUSD</option>
+        <option value="2" selected="selected">BTC</option>
+        <option value="3">USDJPY</option>
+      </select>
+      <p>
+        <label for="lang">Lọai</label>
+        <select id="type">
+          <option value="1">Add</option>
+          <option value="2" selected="selected">Update</option>
+          <option value="3">Close</option>
+        </select>
+      </p>
+
+      <p>
+        <label for="from">SL:</label>
+        <br />
+        <input
+          type="number"
+          id="sl"
+          value="0"
+          style="height: 20px; width: 100px;"
+         
+        />
+      </p>
+      <p>
+        <label for="from">TP:</label>
+        <br />
+        <input
+          type="number"
+          id="tp"
+          value="0"
+          style="height: 20px; width: 100px;"
+         
+        />
+      </p>
+      <textarea id="content"  style="height: 100px" ></textarea>
+      <p>
+        <button onclick="copyToClipboard()">Copy</button>
+      </p>
+    
+    </div>
+  </body>
+</html>
