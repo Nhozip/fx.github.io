@@ -1,76 +1,66 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
-  <head>
-    <title>Ma première page avec du style</title>
-  </head>
+<head>
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+		 // this is called when an error happens in a transaction
+		function errorHandler(transaction, error) {
+		    console.log('Error: ' + error.message + ' code: ' + error.code);
 
-  <script>
-    var x = 0
-    function copyToClipboard() {
-      var text = getSelect('ddlViewBy')
-      var type = getSelect('type')
-      var sl = document.getElementById('sl').value
-      var tp = document.getElementById('tp').value
-      content.value = text + '\n' + type + '\n' + sl + '\n' + tp
-      var copyText = document.getElementById('content').value
+		}
 
-      navigator.clipboard.writeText(copyText).then(() => {
-        // Alert the user that the action took place.
-        // Nobody likes hidden stuff being done under the hood!
-        alert('Copyy ok')
-      })
-    }
-    function getSelect(s) {
-      var e = document.getElementById(s)
-      var value = e.value
-      var text = e.options[e.selectedIndex].text
-      return text
-    }
-  </script>
-  <body>
-    <div>
-      <label for="lang">Symbols</label>
-      <select id="ddlViewBy">
-        <option value="1">XAUUSD</option>
-        <option value="2" selected="selected">BTC</option>
-        <option value="3">USDJPY</option>
-      </select>
-      <p>
-        <label for="lang">Lọai</label>
-        <select id="type">
-          <option value="1">Add</option>
-          <option value="2" selected="selected">Update</option>
-          <option value="3">Close</option>
-        </select>
-      </p>
+		 // this is called when a successful transaction happens
+		function successCallBack() {
+		    console.log("DEBUGGING: success");
 
-      <p>
-        <label for="from">SL:</label>
-        <br />
-        <input
-          type="number"
-          id="sl"
-          value="0"
-          style="height: 20px; width: 100px;"
-         
-        />
-      </p>
-      <p>
-        <label for="from">TP:</label>
-        <br />
-        <input
-          type="number"
-          id="tp"
-          value="0"
-          style="height: 20px; width: 100px;"
-         
-        />
-      </p>
-      <textarea id="content"  style="height: 100px" ></textarea>
-      <p>
-        <button onclick="copyToClipboard()">Copy</button>
-      </p>
-    
-    </div>
-  </body>
+		}
+		 //This is for Listing values present in the database
+		function ListDBValues() {
+		    $('#msgbox').html('');
+		    var db = openDatabase('mydb-test', '1.0', 'sqllite test database', 2 * 1024 * 1024);
+		    db.transaction(function (transaction) {
+		        transaction.executeSql('SELECT * FROM Msg;', [],
+		            function (transaction, result) {
+		                if (result != null && result.rows != null) {
+		                    console.log(result.rows)
+		                    for (var i = 0; i < result.rows.length; i++) {
+		                        var row = result.rows.item(i);
+		                        console.log(row.Name)
+		                        $('#msgbox').append('<br>' + row.MsgId + '. ' +
+		                            row.Name + ' ' + row.Msg);
+		                    }
+		                }
+		            }, errorHandler);
+		    }, errorHandler, nullHandler);
+
+		    return;
+		}
+
+		function nullHandler() {};
+		$(document).ready(function () {
+		    // Opening a existing database or creating a new one if don't exist
+		    var db = openDatabase('mydb-test', '1.0', 'sqllite test database', 2 * 1024 * 1024);
+		    db.transaction(function (tx) {
+		        // Create a table in if not exist
+		        tx.executeSql('CREATE TABLE IF NOT EXISTS Msg(MsgId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Msg TEXT NOT NULL)', [], nullHandler, errorHandler);
+		    }, errorHandler, successCallBack);
+		});
+		ListDBValues();
+		$(document).on('click', '#submit', function () {
+		    var db = openDatabase('mydb-test', '1.0', 'sqllite test database', 2 * 1024 * 1024);
+		    db.transaction(function (tx) {
+		        tx.executeSql('INSERT INTO Msg (Name, Msg) VALUES (?, ?)', [$('#name').val(), $('#msg').val()], nullHandler, errorHandler);
+		    });
+		    ListDBValues();
+		})
+	</script>
+</head>
+	<body>
+		<div id="msgbox">
+		</div>
+		<p>
+			<input type="text" id="name" placeholder="Name" /></br>
+			<input type="text" id="msg" placeholder="Message" /></br>
+			<input type="button" value="Add Message" id="submit">
+			<input type="button" value="Refresh" onClick="ListDBValues()"> <br>
+	</body>
 </html>
