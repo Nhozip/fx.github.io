@@ -8,7 +8,7 @@
   <script>
     var x = 0
     const userAction = async () => {
-      const response = await fetch('http://example.com/movies.json');
+      const response = await fetch('https://ghibliapi.herokuapp.com/films');
       const myJson = await response.json(); //extract JSON from the http response
       console.log(myJson)
       // do something with myJson
