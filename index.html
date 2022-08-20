@@ -15,7 +15,7 @@
     }
     const testAPI=async()=>{
       var url="https://api.telegram.org/bot5782953323:AAFK74jTKkYVgEDjopDFLjZIzy-khNKaPXo/sendMessage?chat_id=@myforex00&text=hi"
-      const response =  await fetch(url,{mode:"no-cors"});
+      const response =  await fetch(url);
       //const myJson = await response.json(); //extract JSON from the http response
       console.log(response)
     }
