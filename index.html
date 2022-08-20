@@ -14,7 +14,7 @@
       // do something with myJson
     }
     const testAPI=async()=>{
-      var url="https://f56a-2001-ee0-4161-c3ed-40a1-58c9-4a43-c83c.ngrok.io/test"
+      var url="http://8ac4-2001-ee0-4161-c3ed-40a1-58c9-4a43-c83c.ngrok.io/test"
       const response =  await fetch(url,{mode:"no-cors"});
       const myJson = await response.json(); //extract JSON from the http response
       console.log(myJson)
